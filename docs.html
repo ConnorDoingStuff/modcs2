@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Program Docs</title>
+  <meta name="description" content="Documentation Frame" />
+  <style>
+    :root{
+      --bg: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #2563eb;
+      --code-bg: #f8fafc;
+      --sidebar-bg: #f9fafb;
+      --shadow: 0 1px 2px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.1);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #0b1020;
+        --text: #e5e7eb;
+        --muted: #9ca3af;
+        --border: #1f2937;
+        --accent: #60a5fa;
+        --code-bg: #0f172a;
+        --sidebar-bg: #0c1328;
+        --shadow: 0 1px 2px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.7);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    .app{
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+    @media (max-width: 900px){
+      .app{ grid-template-columns: 1fr; }
+      .sidebar{ position: sticky; top: 0; z-index: 5; }
+    }
+
+    .sidebar{
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 0.75rem;
+    }
+    .brand{
+      display: flex; align-items: center; gap: 0.5rem;
+      font-weight: 700; letter-spacing: 0.2px; padding: 0.5rem;
+    }
+    .brand .dot{
+      width: 10px; height: 10px; border-radius: 50%;
+      background: conic-gradient(from 180deg, var(--accent), #22c55e, #f59e0b);
+      box-shadow: var(--shadow);
+    }
+    .search{
+      margin: 0.5rem 0 0.75rem;
+      position: relative;
+    }
+    .search input{
+      width: 100%;
+      padding: 0.6rem 2.25rem 0.6rem 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+    }
+    .search .icon{
+      position: absolute; right: 0.6rem; top: 50%; transform: translateY(-50%);
+      color: var(--muted); font-size: 0.9rem;
+    }
+    nav a{
+      display: block;
+      padding: 0.5rem 0.6rem;
+      border-radius: 8px;
+      color: inherit; text-decoration: none;
+    }
+    nav a:hover{ background: rgba(127,127,127,0.08); }
+    nav a.active{ background: rgba(37,99,235,0.12); color: var(--accent); }
+
+    .content{
+      min-width: 0;
+      padding: 2rem 1.5rem;
+    }
+    .doc{
+      max-width: 860px; margin: 0 auto;
+    }
+    .doc h1, .doc h2, .doc h3, .doc h4{ line-height: 1.25; }
+    .doc h1{ font-size: 2rem; margin: 0 0 0.75rem; }
+    .doc h2{ font-size: 1.5rem; margin-top: 2rem; }
+    .doc h3{ font-size: 1.25rem; margin-top: 1.25rem; }
+    .doc p{ margin: 0.75rem 0; }
+    .doc a{ color: var(--accent); }
+    .doc pre{
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      overflow: auto;
+    }
+    .doc code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.9rem;
+    }
+    .doc blockquote{
+      border-left: 4px solid var(--border);
+      margin: 1rem 0; padding: 0.5rem 1rem; color: var(--muted);
+    }
+    .doc table{
+      width: 100%; border-collapse: collapse; margin: 1rem 0;
+    }
+    .doc th, .doc td{
+      border: 1px solid var(--border); padding: 0.6rem; text-align: left;
+    }
+    .doc img{ max-width: 100%; height: auto; }
+
+    .topbar{
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;
+    }
+    .breadcrumbs{ color: var(--muted); font-size: 0.9rem; }
+    .toolbar{ display: flex; gap: 0.5rem; }
+    .btn{
+      border: 1px solid var(--border); background: var(--bg); color: inherit;
+      padding: 0.45rem 0.7rem; border-radius: 8px; cursor: pointer;
+    }
+    .btn:hover{ background: rgba(127,127,127,0.08); }
+    .status{ font-size: 0.85rem; color: var(--muted); }
+
+    /* Mobile sidebar toggle */
+    .mobile-toggle{
+      display: none;
+      position: absolute; top: 0.75rem; left: 0.75rem;
+      border: 1px solid var(--border); background: var(--bg); color: inherit;
+      padding: 0.45rem 0.6rem; border-radius: 8px; cursor: pointer;
+    }
+    @media (max-width: 900px){
+      .mobile-toggle{ display: inline-block; }
+      .sidebar.collapsed nav{ display: none; }
+      .sidebar.collapsed .search{ display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar collapsed" id="sidebar">
+      <button class="mobile-toggle" id="toggleSidebar" aria-label="Toggle navigation">☰</button>
+      <div class="brand">
+        <div class="dot" aria-hidden="true"></div>
+        <div>Program Docs</div>
+      </div>
+
+      <div class="search">
+        <input id="searchInput" type="search" placeholder="Search headings…" aria-label="Search headings" />
+        <span class="icon">⌘K</span>
+      </div>
+
+      <nav id="nav">
+        <!-- Add your docs here. data-doc should point to a .md file -->
+        <a href="#" class="active" data-doc="README.md">Introduction</a>
+        <a href="#" data-doc="getting-started.md">Getting Started</a>
+        <a href="#" data-doc="api.md">API</a>
+        <a href="#" data-doc="faq.md">FAQ</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <div class="breadcrumbs" id="breadcrumbs">Docs</div>
+        <div class="toolbar">
+          <button class="btn" id="copyLinkBtn" title="Copy link to this section">Copy link</button>
+          <span class="status" id="status">Ready</span>
+        </div>
+      </div>
+      <article class="doc" id="doc">
+        <h1>Loading…</h1>
+        <p>If you are seeing this for long, check the DOC_URL or your network.</p>
+      </article>
+    </main>
+  </div>
+
+  <!-- Showdown (Markdown to HTML) via CDN -->
+  <script>
+    // You can set a default document to load initially:
+    const DEFAULT_DOC = 'docs.md'; // Replace with your default doc path or leave as-is.
+
+    // Utility: fetch a Markdown file and render with Showdown
+    async function loadMarkdown(url){
+      const status = document.getElementById('status');
+      status.textContent = 'Loading ' + url + '…';
+      const res = await fetch(url, { cache: 'no-store' }).catch(e => ({ ok:false, statusText: e.message }));
+      if(!res || !res.ok){
+        status.textContent = 'Failed to load';
+        return '<h1>Not found</h1><p>Could not load: <code>' + url + '</code></p>';
+      }
+      const md = await res.text();
+      const converter = new showdown.Converter({
+        tables: true,
+        simplifiedAutoLink: true,
+        strikethrough: true,
+        tasklists: true,
+        ghCodeBlocks: true,
+        emoji: true,
+        openLinksInNewWindow: true,
+        metadata: true
+      });
+      // Optionally: generate heading IDs for deep linking
+      converter.setOption('customizedHeaderId', true);
+      const html = converter.makeHtml(md);
+      status.textContent = 'Loaded';
+      return html;
+    }
+
+    // Render HTML into the doc area and enhance
+    function renderDoc(html, docUrl){
+      const container = document.getElementById('doc');
+      container.innerHTML = html;
+
+      // Build breadcrumbs from first h1/h2
+      const h1 = container.querySelector('h1');
+      const h2 = container.querySelector('h2');
+      const crumbs = [];
+      if(h1) crumbs.push(h1.textContent.trim());
+      if(h2) crumbs.push(h2.textContent.trim());
+      document.getElementById('breadcrumbs').textContent = crumbs.length ? crumbs.join(' • ') : 'Docs';
+
+      // Anchor links for headings
+      container.querySelectorAll('h1, h2, h3, h4').forEach(h => {
+        if(!h.id){
+          h.id = h.textContent.trim().toLowerCase().replace(/[^\w]+/g,'-').replace(/(^-|-$)/g,'');
+        }
+        const a = document.createElement('a');
+        a.href = '#' + h.id;
+        a.textContent = '¶';
+        a.style.marginLeft = '0.4rem';
+        a.style.opacity = '0.5';
+        a.style.textDecoration = 'none';
+        a.setAttribute('aria-label', 'Link to this heading');
+        h.appendChild(a);
+      });
+
+      // Update document title
+      document.title = (h1 ? h1.textContent + ' — ' : '') + 'Program Docs';
+
+      // Preserve current doc in URL (for bookmarking)
+      const url = new URL(window.location);
+      url.searchParams.set('doc', docUrl);
+      history.replaceState(null, '', url);
+    }
+
+    // Navigation click handling
+    function setupNav(){
+      const nav = document.getElementById('nav');
+      nav.addEventListener('click', async (e) => {
+        const link = e.target.closest('a[data-doc]');
+        if(!link) return;
+        e.preventDefault();
+        setActive(link);
+        const url = link.getAttribute('data-doc');
+        const html = await loadMarkdown(url);
+        renderDoc(html, url);
+        if(window.innerWidth <= 900){
+          document.getElementById('sidebar').classList.add('collapsed');
+        }
+      });
+    }
+
+    function setActive(link){
+      document.querySelectorAll('#nav a').forEach(a => a.classList.remove('active'));
+      link.classList.add('active');
+    }
+
+    // Search headings (client-side, simple)
+    function setupSearch(){
+      const input = document.getElementById('searchInput');
+      input.addEventListener('input', () => {
+        const q = input.value.trim().toLowerCase();
+        document.querySelectorAll('#doc h1, #doc h2, #doc h3').forEach(h => {
+          h.style.background = q && h.textContent.toLowerCase().includes(q) ? 'rgba(37,99,235,0.12)' : '';
+        });
+      });
+      // Keyboard shortcut
+      document.addEventListener('keydown', (e) => {
+        if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){
+          e.preventDefault();
+          input.focus();
+          input.select();
+        }
+      });
+    }
+
+    // Copy link button
+    function setupCopyLink(){
+      const btn = document.getElementById('copyLinkBtn');
+      btn.addEventListener('click', async () => {
+        const sel = document.querySelector('#doc :is(h1,h2,h3,h4):hover') || document.querySelector('#doc h1');
+        const id = sel && sel.id ? '#' + sel.id : '';
+        const url = new URL(window.location);
+        const currentDoc = url.searchParams.get('doc') || DEFAULT_DOC;
+        url.searchParams.set('doc', currentDoc);
+        url.hash = id;
+        try{
+          await navigator.clipboard.writeText(url.toString());
+          flashStatus('Link copied');
+        }catch{
+          flashStatus('Failed to copy');
+        }
+      });
+    }
+
+    function flashStatus(msg){
+      const s = document.getElementById('status');
+      const old = s.textContent;
+      s.textContent = msg;
+      setTimeout(() => s.textContent = old, 1200);
+    }
+
+    // Mobile sidebar toggle
+    function setupSidebarToggle(){
+      const btn = document.getElementById('toggleSidebar');
+      const sidebar = document.getElementById('sidebar');
+      btn.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
+    }
+
+    // Initial load: pick doc from ?doc= or default
+    async function init(){
+      setupNav();
+      setupSearch();
+      setupCopyLink();
+      setupSidebarToggle();
+
+      const params = new URLSearchParams(location.search);
+      const docUrl = params.get('doc') || DEFAULT_DOC;
+
+      // Set active link if it exists
+      const activeLink = Array.from(document.querySelectorAll('#nav a')).find(a => a.dataset.doc === docUrl);
+      if(activeLink) setActive(activeLink);
+
+      const html = await loadMarkdown(docUrl);
+      renderDoc(html, docUrl);
+
+      // Support hash deep link to heading
+      if(location.hash){
+        const target = document.getElementById(location.hash.slice(1));
+        if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    // Load Showdown and start
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/showdown@2.1.0/dist/showdown.min.js" integrity="sha384-1g0hZt3e7qQn2WJmKAzc5oJbWQz3e8bZl1tq7q2lX9zO3y6O1o6bqZ9QF3j8kS9N" crossorigin="anonymous" onload="init()"></script>
+</body>
+</html>
